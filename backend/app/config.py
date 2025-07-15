@@ -1,10 +1,11 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
+import os
 
 class Settings(BaseSettings):
-    # 修改默认数据库路径，指向持久化的数据目录
-    database_url: str = "sqlite:///./data/sports_platform.db"
-    secret_key: str = "your-secret-key-change-this-in-production"
+    # SQLite 数据库配置 - 存储在项目根目录
+    database_url: str = "sqlite:///./sports_platform.db"
+    secret_key: str = "sports-platform-secret-key-please-change-in-production"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     debug: bool = True

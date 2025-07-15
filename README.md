@@ -17,7 +17,7 @@
 
 ### 后端 (Backend)
 - **框架**: FastAPI (Python)
-- **数据库**: SQLAlchemy + SQLite/PostgreSQL
+- **数据库**: SQLAlchemy + SQLite
 - **认证**: JWT (JSON Web Tokens)
 - **API 文档**: 自动生成 Swagger/OpenAPI 文档
 
