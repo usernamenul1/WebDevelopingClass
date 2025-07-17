@@ -48,13 +48,13 @@ echo 🔧 后端地址: http://localhost:8000
 echo 📚 API 文档: http://localhost:8000/docs
 echo 💾 数据库: SQLite (sports_platform.db)
 echo ========================================
-echo.
-echo 🔑 测试账号：
-echo - 管理员账号: admin / admin123
-echo - 测试用户账号: user1 / user123
-echo.
-echo 💡 提示：
-echo - 关闭命令窗口可停止对应服务
-echo - 数据库文件位于 backend/sports_platform.db
-echo.
-pause
+@REM echo.
+@REM echo 🔑 测试账号：
+@REM echo - 管理员账号: admin / admin123
+@REM echo - 测试用户账号: user1 / user123
+@REM echo.
+@REM echo 💡 提示：
+@REM echo - 关闭命令窗口可停止对应服务
+@REM echo - 数据库文件位于 backend/sports_platform.db
+@REM echo.
+@REM pause

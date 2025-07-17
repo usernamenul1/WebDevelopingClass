@@ -87,12 +87,14 @@ export const AuthProvider = ({ children }) => {
             const response = await authAPI.login(credentials);
             const { access_token } = response.data;
 
-            // 获取用户信息
+            // 先保存 token 到 localStorage
+            localStorage.setItem('access_token', access_token);
+
+            // 然后获取用户信息（此时 axios 拦截器可以读取到 token）
             const userResponse = await authAPI.getCurrentUser();
             const user = userResponse.data;
 
-            // 保存到本地存储
-            localStorage.setItem('access_token', access_token);
+            // 保存用户信息
             localStorage.setItem('user', JSON.stringify(user));
 
             dispatch({
@@ -105,6 +107,10 @@ export const AuthProvider = ({ children }) => {
 
             return { success: true };
         } catch (error) {
+            // 如果失败，清除可能已保存的 token
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+
             return {
                 success: false,
                 message: error.response?.data?.detail || '登录失败',
