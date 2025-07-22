@@ -7,10 +7,10 @@ from sqlalchemy.pool import StaticPool
 # 在导入 app 前先设置测试环境
 import os
 os.environ["TESTING"] = "True"
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 
-# 仅导入需要的部分，避免创建实际数据库连接
-from app.database import Base
-from app.dependencies import get_db
+# 修正导入路径 - 从 database 而不是 dependencies 导入
+from app.database import Base, get_db
 from app import main
 
 # 创建测试数据库
