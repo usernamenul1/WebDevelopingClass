@@ -43,10 +43,9 @@ def db():
 
 
 @pytest.fixture(scope="function")
-def client():
-    """使用兼容的方式创建测试客户端"""
-    import httpx
-    return httpx.Client(
-        base_url="http://testserver",
-        transport=httpx.ASGITransport(app=main.app)
-    )
+def client(db):
+    """创建测试客户端"""
+    # 直接使用 FastAPI 的 TestClient
+    from fastapi.testclient import TestClient
+    test_client = TestClient(main.app)
+    return test_client
