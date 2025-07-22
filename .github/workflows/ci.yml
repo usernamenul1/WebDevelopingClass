@@ -72,7 +72,7 @@ jobs:
       run:
         working-directory: ./backend
     
-    services:
+    # services:
       # 如果需要数据库服务，可以在这里添加
       # postgres:
       #   image: postgres:13
