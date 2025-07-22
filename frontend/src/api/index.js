@@ -16,10 +16,10 @@ api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('access_token');
         if (token) {
-            console.log('发送请求时的 token:', token.substring(0, 50) + '...'); // 添加调试
+            // console.log('发送请求时的 token:', token.substring(0, 50) + '...'); // 添加调试
             config.headers.Authorization = `Bearer ${token}`;
-        } else {
-            console.log('没有找到 token');
+            // } else {
+            //     console.log('没有找到 token');
         }
         return config;
     },

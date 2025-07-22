@@ -7,8 +7,19 @@ python-multipart==0.0.19
 email-validator==2.1.0
 pydantic-settings==2.0.3
 python-dotenv==1.0.0
-pytest==7.4.3
-pytest-asyncio==0.21.1
-httpx==0.25.2
 uvicorn==0.35.0
 setuptools==80.9.0
+
+# 测试依赖
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+httpx==0.25.2
+
+# 代码质量工具
+black==23.12.1
+isort==5.13.2
+flake8==6.1.0
+mypy==1.8.0
+bandit==1.7.5
+safety==2.3.5
