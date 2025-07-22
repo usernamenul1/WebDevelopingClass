@@ -43,6 +43,7 @@ def db():
 
 
 @pytest.fixture(scope="function")
-def client(db):
-    with TestClient(main.app) as c:
-        yield c
+def client():
+    # 修改这里，不使用 with 语句和命名参数
+    client = TestClient(main.app)
+    return client
