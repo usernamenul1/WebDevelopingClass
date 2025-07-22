@@ -44,6 +44,14 @@ def db():
 
 @pytest.fixture(scope="function")
 def client():
-    # 修改这里，不使用 with 语句和命名参数
-    client = TestClient(main.app)
-    return client
+    """使用兼容的方式创建测试客户端"""
+    import httpx
+    return httpx.Client(
+        base_url="http://testserver",
+        transport=httpx.ASGITransport(app=main.app)
+    )
+
+
+def pytest_configure(config):
+    """配置 pytest-asyncio 为自动模式而非严格模式"""
+    config.addinivalue_line("asyncio_mode", "auto")
