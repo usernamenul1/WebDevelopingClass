@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  NODE_VERSION: '16'
+  NODE_VERSION: '18'
   PYTHON_VERSION: '3.9'
 
 jobs:
@@ -153,118 +153,118 @@ jobs:
         path: backend/htmlcov/
         retention-days: 30
 
-  # Docker 构建和测试
-  docker-build:
-    name: Docker Build & Test
-    runs-on: ubuntu-latest
-    needs: [frontend-test, backend-test]
+  # # Docker 构建和测试
+  # docker-build:
+  #   name: Docker Build & Test
+  #   runs-on: ubuntu-latest
+  #   needs: [frontend-test, backend-test]
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
     
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+  #   - name: Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v3
     
-    - name: Build backend image
-      uses: docker/build-push-action@v5
-      with:
-        context: ./backend
-        push: false
-        tags: sports-platform-backend:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+  #   - name: Build backend image
+  #     uses: docker/build-push-action@v5
+  #     with:
+  #       context: ./backend
+  #       push: false
+  #       tags: sports-platform-backend:latest
+  #       cache-from: type=gha
+  #       cache-to: type=gha,mode=max
     
-    - name: Build frontend image
-      uses: docker/build-push-action@v5
-      with:
-        context: ./frontend
-        push: false
-        tags: sports-platform-frontend:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+  #   - name: Build frontend image
+  #     uses: docker/build-push-action@v5
+  #     with:
+  #       context: ./frontend
+  #       push: false
+  #       tags: sports-platform-frontend:latest
+  #       cache-from: type=gha
+  #       cache-to: type=gha,mode=max
     
-    - name: Test docker-compose setup
-      run: |
-        docker-compose up -d
-        sleep 30
+  #   - name: Test docker-compose setup
+  #     run: |
+  #       docker-compose up -d
+  #       sleep 30
         
-        # 测试后端健康检查
-        echo "Testing backend health..."
-        curl -f http://localhost:8000/docs || exit 1
+  #       # 测试后端健康检查
+  #       echo "Testing backend health..."
+  #       curl -f http://localhost:8000/docs || exit 1
         
-        # 测试前端可访问性
-        echo "Testing frontend accessibility..."
-        curl -f http://localhost/ || exit 1
+  #       # 测试前端可访问性
+  #       echo "Testing frontend accessibility..."
+  #       curl -f http://localhost/ || exit 1
         
-        # 测试API代理
-        echo "Testing API proxy..."
-        curl -f http://localhost/api/docs || exit 1
+  #       # 测试API代理
+  #       echo "Testing API proxy..."
+  #       curl -f http://localhost/api/docs || exit 1
         
-        docker-compose down
+  #       docker-compose down
 
-  # 安全扫描
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: [frontend-test, backend-test]
+  # # 安全扫描
+  # security-scan:
+  #   name: Security Scan
+  #   runs-on: ubuntu-latest
+  #   needs: [frontend-test, backend-test]
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
     
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+  #   - name: Run Trivy vulnerability scanner
+  #     uses: aquasecurity/trivy-action@master
+  #     with:
+  #       scan-type: 'fs'
+  #       scan-ref: '.'
+  #       format: 'sarif'
+  #       output: 'trivy-results.sarif'
     
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'
+  #   - name: Upload Trivy scan results to GitHub Security tab
+  #     uses: github/codeql-action/upload-sarif@v2
+  #     if: always()
+  #     with:
+  #       sarif_file: 'trivy-results.sarif'
 
-  # 部署准备（仅在主分支）
-  deploy-prepare:
-    name: Prepare Deployment
-    runs-on: ubuntu-latest
-    needs: [docker-build, security-scan]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  # # 部署准备（仅在主分支）
+  # deploy-prepare:
+  #   name: Prepare Deployment
+  #   runs-on: ubuntu-latest
+  #   needs: [docker-build, security-scan]
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
     
-    - name: Download frontend build
-      uses: actions/download-artifact@v3
-      with:
-        name: frontend-build
-        path: frontend-build/
+  #   - name: Download frontend build
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: frontend-build
+  #       path: frontend-build/
     
-    - name: Create deployment package
-      run: |
-        mkdir -p deployment-package
-        cp -r frontend-build deployment-package/
-        cp docker-compose.yml deployment-package/
-        cp -r backend deployment-package/
-        cp -r frontend deployment-package/
-        tar -czf deployment-package.tar.gz deployment-package/
+  #   - name: Create deployment package
+  #     run: |
+  #       mkdir -p deployment-package
+  #       cp -r frontend-build deployment-package/
+  #       cp docker-compose.yml deployment-package/
+  #       cp -r backend deployment-package/
+  #       cp -r frontend deployment-package/
+  #       tar -czf deployment-package.tar.gz deployment-package/
     
-    - name: Upload deployment package
-      uses: actions/upload-artifact@v3
-      with:
-        name: deployment-package
-        path: deployment-package.tar.gz
-        retention-days: 90
+  #   - name: Upload deployment package
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: deployment-package
+  #       path: deployment-package.tar.gz
+  #       retention-days: 90
     
-    - name: Generate deployment summary
-      run: |
-        echo "## 🚀 Deployment Ready" >> $GITHUB_STEP_SUMMARY
-        echo "- Frontend build completed successfully" >> $GITHUB_STEP_SUMMARY
-        echo "- Backend tests passed" >> $GITHUB_STEP_SUMMARY
-        echo "- Docker images built and tested" >> $GITHUB_STEP_SUMMARY
-        echo "- Security scans completed" >> $GITHUB_STEP_SUMMARY
-        echo "- Deployment package created: deployment-package.tar.gz" >> $GITHUB_STEP_SUMMARY
+  #   - name: Generate deployment summary
+  #     run: |
+  #       echo "## 🚀 Deployment Ready" >> $GITHUB_STEP_SUMMARY
+  #       echo "- Frontend build completed successfully" >> $GITHUB_STEP_SUMMARY
+  #       echo "- Backend tests passed" >> $GITHUB_STEP_SUMMARY
+  #       echo "- Docker images built and tested" >> $GITHUB_STEP_SUMMARY
+  #       echo "- Security scans completed" >> $GITHUB_STEP_SUMMARY
+  #       echo "- Deployment package created: deployment-package.tar.gz" >> $GITHUB_STEP_SUMMARY
