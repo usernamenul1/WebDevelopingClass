@@ -1,3 +1,3 @@
 # 简单的mock测试文件
-def mock_test():
+def test_mock():
     assert 1 + 1 == 2
