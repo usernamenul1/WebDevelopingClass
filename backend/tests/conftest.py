@@ -1,3 +1,11 @@
+import os
+import sys
+from pathlib import Path
+
+# 添加项目根目录到Python路径
+BASE_DIR = Path(__file__).parent.parent
+sys.path.append(str(BASE_DIR))
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine

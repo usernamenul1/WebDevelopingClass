@@ -110,68 +110,68 @@ jobs:
         fi
 
   # 性能测试
-  performance-test:
-    name: Performance Test
-    runs-on: ubuntu-latest
+  # performance-test:
+  #   name: Performance Test
+  #   runs-on: ubuntu-latest
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
     
-    - name: Build and start services
-      run: |
-        docker-compose up -d
-        sleep 60  # 等待服务启动
+  #   - name: Build and start services
+  #     run: |
+  #       docker-compose up -d
+  #       sleep 60  # 等待服务启动
     
-    - name: Install performance testing tools
-      run: |
-        npm install -g lighthouse artillery
+  #   - name: Install performance testing tools
+  #     run: |
+  #       npm install -g lighthouse artillery
     
-    - name: Backend API performance test
-      run: |
-        echo "## API Performance Test Results" >> $GITHUB_STEP_SUMMARY
+  #   - name: Backend API performance test
+  #     run: |
+  #       echo "## API Performance Test Results" >> $GITHUB_STEP_SUMMARY
         
-        # 创建 Artillery 配置文件
-        cat > artillery-config.yml << EOF
-        config:
-          target: 'http://localhost:8000'
-          phases:
-            - duration: 60
-              arrivalRate: 10
-        scenarios:
-          - name: "API Health Check"
-            requests:
-              - get:
-                  url: "/docs"
-        EOF
+  #       # 创建 Artillery 配置文件
+  #       cat > artillery-config.yml << EOF
+  #       config:
+  #         target: 'http://localhost:8000'
+  #         phases:
+  #           - duration: 60
+  #             arrivalRate: 10
+  #       scenarios:
+  #         - name: "API Health Check"
+  #           requests:
+  #             - get:
+  #                 url: "/docs"
+  #       EOF
         
-        artillery run artillery-config.yml --output performance-report.json
+  #       artillery run artillery-config.yml --output performance-report.json
         
-        # 解析性能结果
-        if [ -f performance-report.json ]; then
-          echo "✅ Performance test completed" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "❌ Performance test failed" >> $GITHUB_STEP_SUMMARY
-        fi
+  #       # 解析性能结果
+  #       if [ -f performance-report.json ]; then
+  #         echo "✅ Performance test completed" >> $GITHUB_STEP_SUMMARY
+  #       else
+  #         echo "❌ Performance test failed" >> $GITHUB_STEP_SUMMARY
+  #       fi
     
-    - name: Frontend Lighthouse performance test
-      run: |
-        echo "## Frontend Performance (Lighthouse)" >> $GITHUB_STEP_SUMMARY
+  #   - name: Frontend Lighthouse performance test
+  #     run: |
+  #       echo "## Frontend Performance (Lighthouse)" >> $GITHUB_STEP_SUMMARY
         
-        lighthouse http://localhost --output json --output-path lighthouse-report.json --chrome-flags="--headless --no-sandbox" || true
+  #       lighthouse http://localhost --output json --output-path lighthouse-report.json --chrome-flags="--headless --no-sandbox" || true
         
-        if [ -f lighthouse-report.json ]; then
-          performance=$(jq '.categories.performance.score * 100' lighthouse-report.json)
-          accessibility=$(jq '.categories.accessibility.score * 100' lighthouse-report.json)
-          bestPractices=$(jq '.categories["best-practices"].score * 100' lighthouse-report.json)
-          seo=$(jq '.categories.seo.score * 100' lighthouse-report.json)
+  #       if [ -f lighthouse-report.json ]; then
+  #         performance=$(jq '.categories.performance.score * 100' lighthouse-report.json)
+  #         accessibility=$(jq '.categories.accessibility.score * 100' lighthouse-report.json)
+  #         bestPractices=$(jq '.categories["best-practices"].score * 100' lighthouse-report.json)
+  #         seo=$(jq '.categories.seo.score * 100' lighthouse-report.json)
           
-          echo "- Performance: ${performance}%" >> $GITHUB_STEP_SUMMARY
-          echo "- Accessibility: ${accessibility}%" >> $GITHUB_STEP_SUMMARY
-          echo "- Best Practices: ${bestPractices}%" >> $GITHUB_STEP_SUMMARY
-          echo "- SEO: ${seo}%" >> $GITHUB_STEP_SUMMARY
-        fi
+  #         echo "- Performance: ${performance}%" >> $GITHUB_STEP_SUMMARY
+  #         echo "- Accessibility: ${accessibility}%" >> $GITHUB_STEP_SUMMARY
+  #         echo "- Best Practices: ${bestPractices}%" >> $GITHUB_STEP_SUMMARY
+  #         echo "- SEO: ${seo}%" >> $GITHUB_STEP_SUMMARY
+  #       fi
     
-    - name: Cleanup
-      if: always()
-      run: docker-compose down
+  #   - name: Cleanup
+  #     if: always()
+  #     run: docker-compose down

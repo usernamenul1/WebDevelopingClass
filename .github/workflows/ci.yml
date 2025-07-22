@@ -130,7 +130,9 @@ jobs:
     
     - name: Run tests
       run: |
-        # 直接运行测试，不再创建dummy测试
+        # 设置PYTHONPATH以确保可以找到应用模块
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
+        # 运行测试
         pytest tests/ -v --cov=app --cov-report=xml --cov-report=html
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
