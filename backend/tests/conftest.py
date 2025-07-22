@@ -9,7 +9,7 @@ import os
 os.environ["TESTING"] = "True"
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 
-# 修正导入路径 - 从 database 而不是 dependencies 导入
+# 修正导入路径
 from app.database import Base, get_db
 from app import main
 
@@ -50,8 +50,3 @@ def client():
         base_url="http://testserver",
         transport=httpx.ASGITransport(app=main.app)
     )
-
-
-def pytest_configure(config):
-    """配置 pytest-asyncio 为自动模式而非严格模式"""
-    config.addinivalue_line("asyncio_mode", "auto")
