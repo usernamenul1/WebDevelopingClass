@@ -6,26 +6,37 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent.parent
 sys.path.append(str(BASE_DIR))
 
+# 设置测试环境变量，强制使用SQLite
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+os.environ["TESTING"] = "True"
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.main import app
+# 先导入并替换数据库配置，然后再导入应用
 from app.database import Base, get_db
-from app.auth import get_password_hash
-from app import models
 
-# 使用内存数据库进行测试
+# 创建SQLite测试引擎
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
     connect_args={"check_same_thread": False},
     poolclass=StaticPool,
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# 替换数据库引擎和会话
+import app.database
+app.database.engine = engine
+app.database.SessionLocal = TestingSessionLocal
+
+# 然后导入应用和模型
+from app.main import app
+from app.auth import get_password_hash
+from app import models
 
 @pytest.fixture(scope="function")
 def db():
