@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import EventList from './pages/EventList';
 import EventDetail from './pages/EventDetail';
 import CreateEvent from './pages/CreateEvent';
+import EditEvent from './pages/EditEvent';
 import MyEvents from './pages/MyEvents';
 import MyOrders from './pages/MyOrders';
 import Profile from './pages/Profile';
@@ -39,6 +40,11 @@ function App() {
                                 <Route path="/create-event" element={
                                     <ProtectedRoute>
                                         <CreateEvent />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path="/events/:id/edit" element={
+                                    <ProtectedRoute>
+                                        <EditEvent />
                                     </ProtectedRoute>
                                 } />
                                 <Route path="/my-events" element={
